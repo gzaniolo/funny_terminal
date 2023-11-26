@@ -6,19 +6,19 @@
 
 // TODO this protocol appears to have its last move end at the bottom left
 //  corner of the letter. See if this is good...
-int levelYList[] = {2,2,1,0,0,2};
 int levelXList[] = {0,2,1,2,0,0};
+int levelYList[] = {2,2,1,0,0,2};
 // TODO not permanent by any means
 int period = 6;
 
-
+#define LOW_PIN_OFFSET 2
 // TODO may eventually have to diverge into x and y pin counts
-#define PIN_COUNT 6
+#define PIN_COUNT 4
 #define VOLTAGE_LVLS_TOTAL (1 << PIN_COUNT)
 // TODO may change once we actually write all the chars
 #define VOLTAGE_LVLS_CHAR 4
 // TODO may change, also if change bits per row/col
-#define CHARS_PER_ROW = (VOLTAGE_LVLS_TOTAL / VOLTAGE_LVLS_CHAR)
+#define CHARS_PER_ROW (VOLTAGE_LVLS_TOTAL / VOLTAGE_LVLS_CHAR)
 
 
 uint32_t curr_row = 0;
@@ -26,53 +26,101 @@ uint32_t curr_col = 0;
 
 // Write to "low 'x' pins" 
 void write_low(uint32_t val) {
+  
   for(int i = 0; i < PIN_COUNT; i++) {
     uint32_t temp = val << 31 - i;
     temp >>= 31;
     if(temp) {
-      digitalWrite(i,HIGH);
+      digitalWrite(i + LOW_PIN_OFFSET,HIGH);
     } else {
-      digitalWrite(i,LOW);
+      digitalWrite(i + LOW_PIN_OFFSET,LOW);
     }
   }
 }
 
 // Write to "high 'y' pins" 
 void write_high(uint32_t val) {
+//  Serial.println(val);
   for(int i = 0; i < PIN_COUNT; i++) {
     uint32_t temp = val << 31 - i;
     temp >>= 31;
     if(temp) {
-      digitalWrite(i + PIN_COUNT,HIGH);
+//      TODO fix this!!! magic numbers
+//      digitalWrite(i + PIN_COUNT + LOW_PIN_OFFSET,HIGH);
+
+// Jamk
+      digitalWrite(i + PIN_COUNT + LOW_PIN_OFFSET + 2,HIGH);
+
     } else {
-      digitalWrite(i + PIN_COUNT,LOW);
+//      digitalWrite(i + PIN_COUNT + LOW_PIN_OFFSET,LOW);
+// jank
+      digitalWrite(i + PIN_COUNT + LOW_PIN_OFFSET + 2,LOW);
+
     }
   }
 }
 
+void write_pos(uint32_t row, uint32_t col) {
+  // TODO magic numbers
+//    uint32_t temp = (row << 8) | (col << 2);
+    PORTD = col << 2;
+    PORTB = row;
+}
+
 // TODO future more params
 void write_letter(uint32_t row, uint32_t col) {
-  uint32_t row_offset = VOLTAGE_LVLS_TOTAL - (col * VOLTAGE_LVLS_CHAR);
-  uint32_t col_offset = row * VOLTAGE_LVLS_CHAR; 
+  uint32_t row_offset = VOLTAGE_LVLS_TOTAL - (row * VOLTAGE_LVLS_CHAR) - 1;
+  uint32_t col_offset = col * VOLTAGE_LVLS_CHAR; 
   for(int i = 0; i < period; i++) {
-    write_low(col_offset + levelXList[i]);
-    write_high(row_offset + levelYList[i]);
+//    Serial.print(col_offset + levelXList[i]);
+//    Serial.print(" ");
+//    Serial.println(row_offset - levelYList[i]);
+//    write_low(col_offset + levelXList[i]);
+//    write_high(row_offset - levelYList[i]); 
+    write_pos(row_offset - levelYList[i], col_offset + levelXList[i]);
+    delayMicroseconds(100);
+//    delay(1000);
   }
 }
 
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+//  Serial.begin(115200);
+
+  for(int i = 0; i < PIN_COUNT; i++) {
+    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
+  }
+  for(int i = LOW_PIN_OFFSET + PIN_COUNT; i < LOW_PIN_OFFSET + (PIN_COUNT * 2); i++) {
+    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
+  }
+
+  write_high(0);
+  write_low(0);
 }
 
 void loop() {
 
   // TODO a delay could solve some issues I guess...
-  delay(10);
-  write_letter(curr_row, curr_col);
-  curr_row = (curr_row + ((curr_col + 1) / CHARS_PER_ROW)) % CHARS_PER_ROW;
-  curr_col = (curr_col + 1) % CHARS_PER_ROW;
+
+//  delay(10000);
+//   Serial.println("printing new letter");
+for(int i = 0; i < CHARS_PER_ROW; i++) {
+  for(int j = 0; j < CHARS_PER_ROW; j++) {
+//  for(int j = 0; j < 1; j++) {
+    write_letter(i,j);
+  }
+}
+
+
+// TODO tests to see if the circuit works
+
+//  for(int i = 0; i < 64; i++) {
+//    write_low(i);
+//    write_high(i);
+//    delayMicroseconds(100);
+//  }
+
 }
 
 
