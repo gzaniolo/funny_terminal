@@ -13,7 +13,7 @@ int period = 6;
 
 #define LOW_PIN_OFFSET 2
 // TODO may eventually have to diverge into x and y pin counts
-#define PIN_COUNT 4
+#define PIN_COUNT 6
 #define VOLTAGE_LVLS_TOTAL (1 << PIN_COUNT)
 // TODO may change once we actually write all the chars
 #define VOLTAGE_LVLS_CHAR 4
@@ -23,42 +23,6 @@ int period = 6;
 
 uint32_t curr_row = 0;
 uint32_t curr_col = 0;
-
-// Write to "low 'x' pins" 
-void write_low(uint32_t val) {
-  
-  for(int i = 0; i < PIN_COUNT; i++) {
-    uint32_t temp = val << 31 - i;
-    temp >>= 31;
-    if(temp) {
-      digitalWrite(i + LOW_PIN_OFFSET,HIGH);
-    } else {
-      digitalWrite(i + LOW_PIN_OFFSET,LOW);
-    }
-  }
-}
-
-// Write to "high 'y' pins" 
-void write_high(uint32_t val) {
-//  Serial.println(val);
-  for(int i = 0; i < PIN_COUNT; i++) {
-    uint32_t temp = val << 31 - i;
-    temp >>= 31;
-    if(temp) {
-//      TODO fix this!!! magic numbers
-//      digitalWrite(i + PIN_COUNT + LOW_PIN_OFFSET,HIGH);
-
-// Jamk
-      digitalWrite(i + PIN_COUNT + LOW_PIN_OFFSET + 2,HIGH);
-
-    } else {
-//      digitalWrite(i + PIN_COUNT + LOW_PIN_OFFSET,LOW);
-// jank
-      digitalWrite(i + PIN_COUNT + LOW_PIN_OFFSET + 2,LOW);
-
-    }
-  }
-}
 
 void write_pos(uint32_t row, uint32_t col) {
   // TODO magic numbers
@@ -78,7 +42,7 @@ void write_letter(uint32_t row, uint32_t col) {
 //    write_low(col_offset + levelXList[i]);
 //    write_high(row_offset - levelYList[i]); 
     write_pos(row_offset - levelYList[i], col_offset + levelXList[i]);
-    delayMicroseconds(100);
+    delayMicroseconds(50);
 //    delay(1000);
   }
 }
@@ -88,15 +52,21 @@ void setup() {
   // put your setup code here, to run once:
 //  Serial.begin(115200);
 
-  for(int i = 0; i < PIN_COUNT; i++) {
-    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
-  }
-  for(int i = LOW_PIN_OFFSET + PIN_COUNT; i < LOW_PIN_OFFSET + (PIN_COUNT * 2); i++) {
-    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
+  // MAKE THESE MACROS WHEN WE ACTUALLY NEED TO
+//  for(int i = 0; i < PIN_COUNT; i++) {
+//    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
+//  }
+//  for(int i = LOW_PIN_OFFSET + PIN_COUNT; i < LOW_PIN_OFFSET + (PIN_COUNT * 2); i++) {
+//    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
+//  }
+  for(int i = 2; i < 14; i++) {
+    pinMode(i,OUTPUT);
   }
 
-  write_high(0);
-  write_low(0);
+
+//  write_high(0);
+//  write_low(0);
+  write_pos(0,0);
 }
 
 void loop() {
