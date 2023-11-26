@@ -1,13 +1,13 @@
-//IDEAS 
-//mosfet between letters - short out capcaitor
+
+// IMPORTANT VALUES:
 // 10 nF - 10,000 pF
-//resistors all 1k
+// resistors all 1k
+//IDEAS 
+// mosfet between letters - short out capcaitor - makes line look invisible between
+//  letters
 
 
-// // FOR "B" NOTE -> initial test, new has less voltage levels
-// int levelYList[] = {0,2,4,3,2,1,0};
-// int levelXList[] = {0,0,0,4,0,4,0};
-// int period = 7;
+#include <letters.h>
 
 // TODO this protocol appears to have its last move end at the bottom left
 //  corner of the letter. See if this is good...
@@ -30,31 +30,26 @@ uint32_t curr_row = 0;
 uint32_t curr_col = 0;
 
 void write_pos(uint32_t row, uint32_t col) {
-  // TODO magic numbers
-//    uint32_t temp = (row << 8) | (col << 2);
+// These values are too tightly coupled to arduino pins to generalize. Just use
+//  magic nums sadly
     PORTD = col << 2;
     PORTB = row;
 }
 
-// TODO future more params
+
+// TODO future have a letter parameter
 void write_letter(uint32_t row, uint32_t col) {
   uint32_t row_offset = VOLTAGE_LVLS_TOTAL - (row * VOLTAGE_LVLS_CHAR) - 1;
   uint32_t col_offset = col * VOLTAGE_LVLS_CHAR; 
   for(int i = 0; i < period; i++) {
-//    Serial.print(col_offset + levelXList[i]);
-//    Serial.print(" ");
-//    Serial.println(row_offset - levelYList[i]);
-//    write_low(col_offset + levelXList[i]);
-//    write_high(row_offset - levelYList[i]); 
     write_pos(row_offset - levelYList[i], col_offset + levelXList[i]);
     delayMicroseconds(50);
-//    delay(1000);
   }
 }
 
 
 void setup() {
-  // put your setup code here, to run once:
+// If serial monitor necessary
 //  Serial.begin(115200);
 
   // MAKE THESE MACROS WHEN WE ACTUALLY NEED TO
@@ -64,25 +59,20 @@ void setup() {
 //  for(int i = LOW_PIN_OFFSET + PIN_COUNT; i < LOW_PIN_OFFSET + (PIN_COUNT * 2); i++) {
 //    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
 //  }
+
+  // We initialize all pins lol. Review if it turns out we need more pins
   for(int i = 2; i < 14; i++) {
     pinMode(i,OUTPUT);
   }
 
 
-//  write_high(0);
-//  write_low(0);
   write_pos(0,0);
 }
 
 void loop() {
 
-  // TODO a delay could solve some issues I guess...
-
-//  delay(10000);
-//   Serial.println("printing new letter");
 for(int i = 0; i < CHARS_PER_ROW; i++) {
   for(int j = 0; j < CHARS_PER_ROW; j++) {
-//  for(int j = 0; j < 1; j++) {
     write_letter(i,j);
   }
 }
@@ -97,46 +87,3 @@ for(int i = 0; i < CHARS_PER_ROW; i++) {
 //  }
 
 }
-
-
-
-
-
-// THE GARBAGE CAN
-// DO WITH THIS WHAT YOU WILL
-
-// // TODO: do we have a max number of coords, or should we just print as soon as 
-// //  we can? Worst case makes the most sense bc we can case on overlap...
-// // TODO for now it is 7 but change it as seen fit.
-// typedef struct one_char_s {
-//   int level_x_list[7];
-//   int level_y_list[7];
-// } one_char_t;
-
-// // For now we only need the letter "B" - in the future, make a convenient 
-// //  array-like structure containing all of the info for the letter we need in
-// //  its corresponding ascii index
-// // one_char_t B;
-// // void initialize_B() {
-//   // B->
-// // }
-
-// // void initialize_char_list() {
-// // //  somehow initialize the char array in here
-// // // I could just have all the constants in a different file, and expose the big array of tyype one_char_t* [];...
-// // //  char_list['B'] = 
-// // //GUUUHHHHHHH I forgot arduino is c++ and not c... Could we use classes/is something improperly arcitected??
-// // }
-
-// // TODO this \/ could be it /\ 
-// // one_char_t *char_list[128];
-
-
-// // TODO this looks like trash idk what it is
-// // FOR O
-// //int levelList[] =  {0,1,2,3,4,3,2,1};
-// //period = 8
-// // TODO
-// //int levelYList[] = {0,1,2,3,1,1,0};
-// //int levelXList[] = {0,1,4,2,0,4,0};
-// //int period = 7;
