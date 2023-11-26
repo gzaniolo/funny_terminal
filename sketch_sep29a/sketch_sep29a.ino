@@ -1,3 +1,8 @@
+//IDEAS 
+//mosfet between letters - short out capcaitor
+// 10 nF - 10,000 pF
+//resistors all 1k
+
 
 // // FOR "B" NOTE -> initial test, new has less voltage levels
 // int levelYList[] = {0,2,4,3,2,1,0};
@@ -92,6 +97,7 @@ for(int i = 0; i < CHARS_PER_ROW; i++) {
 //  }
 
 }
+
 
 
 
