@@ -7,12 +7,13 @@
 //  letters
 
 
-#include <letters.h>
+//#include <letters.h>
 
 // TODO this protocol appears to have its last move end at the bottom left
 //  corner of the letter. See if this is good...
 int levelXList[] = {0,2,1,2,0,0};
 int levelYList[] = {2,2,1,0,0,2};
+int penUpList[] =   {0,0,0,0,0,1};
 // TODO not permanent by any means
 int period = 6;
 
@@ -36,6 +37,11 @@ void write_pos(uint32_t row, uint32_t col) {
     PORTB = row;
 }
 
+void write_pen(uint32_t status) {
+  // PORTC controls pins A0-A5 + some other weird stuff
+  PORTC = status;
+}
+
 
 // TODO future have a letter parameter
 void write_letter(uint32_t row, uint32_t col) {
@@ -43,7 +49,10 @@ void write_letter(uint32_t row, uint32_t col) {
   uint32_t col_offset = col * VOLTAGE_LVLS_CHAR; 
   for(int i = 0; i < period; i++) {
     write_pos(row_offset - levelYList[i], col_offset + levelXList[i]);
-    delayMicroseconds(50);
+//    delayMicroseconds(50);
+    delayMicroseconds(40);
+    write_pen(penUpList[i]);
+    delayMicroseconds(10);
   }
 }
 
@@ -52,19 +61,18 @@ void setup() {
 // If serial monitor necessary
 //  Serial.begin(115200);
 
-  // MAKE THESE MACROS WHEN WE ACTUALLY NEED TO
-//  for(int i = 0; i < PIN_COUNT; i++) {
-//    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
-//  }
-//  for(int i = LOW_PIN_OFFSET + PIN_COUNT; i < LOW_PIN_OFFSET + (PIN_COUNT * 2); i++) {
-//    pinMode(i + LOW_PIN_OFFSET,OUTPUT);
-//  }
-
   // We initialize all pins lol. Review if it turns out we need more pins
   for(int i = 2; i < 14; i++) {
     pinMode(i,OUTPUT);
   }
+  // Do these individually instead of with the ddrc=0x2
+  // I don't know what the default is but we should probably keep it that way
+  pinMode(A0, OUTPUT);
+//  pinMode(A1, OUTPUT);
 
+// Website with the arduino stuff
+// https://forum.arduino.cc/t/using-port-c-as-digital-output/15981/2
+// ctrl+f for: Port C includes the RESET pin on PC6 and an undefined pin on PC7. PC0 thru PC5 map to Arduino A0 (14) thru to A5 (19). 
 
   write_pos(0,0);
 }
