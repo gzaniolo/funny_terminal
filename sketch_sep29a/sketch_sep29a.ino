@@ -45,6 +45,8 @@ void write_pen(uint32_t status) {
 
 // TODO future have a letter parameter
 void write_letter(uint32_t row, uint32_t col) {
+  // TODO maybe wait a little bit after setting the voltage to actually draw the
+  //  letter
   uint32_t row_offset = VOLTAGE_LVLS_TOTAL - (row * VOLTAGE_LVLS_CHAR) - 1;
   uint32_t col_offset = col * VOLTAGE_LVLS_CHAR; 
   for(int i = 0; i < period; i++) {
