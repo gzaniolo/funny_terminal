@@ -1,11 +1,24 @@
 
+#ifndef _LETTERS_H_
+#define _LETTERS_H_
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 
 typedef struct letter_s {
-  int *xList;
-  int *yList;
-  int *penUpList;
+  uint8_t *xList;
+  uint8_t *yList;
+  uint8_t *penUpList;
 } letter_t;
 
 letter_t letters[128];
 
 void letters_init();
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

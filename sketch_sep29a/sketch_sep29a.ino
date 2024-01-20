@@ -7,7 +7,7 @@
 //  letters
 
 
-//#include <letters.h>
+#include "letters.h"
 
 // TODO this protocol appears to have its last move end at the bottom left
 //  corner of the letter. See if this is good...
@@ -61,7 +61,20 @@ void write_letter(uint32_t row, uint32_t col) {
 
 void setup() {
 // If serial monitor necessary
-//  Serial.begin(115200);
+  Serial.begin(115200);
+
+  letters_init();
+
+  // Verify letters
+  for(int i = 0; i < 128; i++) {
+    Serial.print("For");
+    Serial.println(char(i));
+    for(int j = 0; letters[i].xList[j] != -1; j++) {
+      Serial.print(letters[i].xList[j]);
+      Serial.print(",");
+    }
+    Serial.println("\n");
+  }
 
   // We initialize all pins lol. Review if it turns out we need more pins
   for(int i = 2; i < 14; i++) {

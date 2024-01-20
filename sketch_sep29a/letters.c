@@ -1,7 +1,8 @@
-#include <letters.h>
-#include <letters_gen.h>
+#include "letters_gen.h"
+#include "letters.h"
 
 void letters_init() {
+  letters_gen_init();
   int curr_idx = 0;
   for(int i = 0; i < 128; i++) {
     letters[i].xList = &(fullXList[curr_idx]);
@@ -13,11 +14,11 @@ void letters_init() {
     curr_idx++;
   }
 
-  for(int i = 0; i < 128; i++) {
-    Serial.println("For %c:\n",i);
-    for(int j = 0; letters[i].xList[j] != -1; j++) {
-      Serial.print("%d,",letters[i].xList[j]);
-    }
-    Serial.println("\n");
-  }
+//  for(int i = 0; i < 128; i++) {
+//    Serial.println("For %c:\n",i);
+//    for(int j = 0; letters[i].xList[j] != -1; j++) {
+//      Serial.print("%d,",letters[i].xList[j]);
+//    }
+//    Serial.println("\n");
+//  }
 }
