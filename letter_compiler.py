@@ -43,35 +43,17 @@ file = open("./sketch_sep29a/letters_gen.c","w")
 
 file.write("#include \"letters_gen.h\"\n\n")
 
-file.write("uint8_t fullXList_arr[] = {")
+file.write("uint8_t fullLetterList_arr[] = {")
 # write big x array
 for i in range(128):
   if i in char_dict:
-    for elem in char_dict[i].x_points:
-      file.write(f"{elem},")
-  file.write("-1,")
-file.write("-1};\n")
-
-file.write("uint8_t fullYList_arr[] = {")
-# write big x array
-for i in range(128):
-  if i in char_dict:
-    for elem in char_dict[i].y_points:
-      file.write(f"{elem},")
-  file.write("-1,")
-file.write("-1};\n")
-
-file.write("uint8_t fullPenUpList_arr[] = {")
-# write big x array
-for i in range(128):
-  if i in char_dict:
-    for elem in char_dict[i].x_points:
+    for j in range(len(char_dict[i].x_points)):
+      elem = char_dict[i].x_points[j] + (char_dict[i].y_points[j] << 2)
       file.write(f"{elem},")
   file.write("-1,")
 file.write("-1};\n\n")
 
+
 file.write("void letters_gen_init() {\n")
-file.write("  fullXList = fullXList_arr;\n")
-file.write("  fullYList = fullYList_arr;\n")
-file.write("  fullPenUpList = fullPenUpList_arr;\n")
+file.write("  fullLetterList = fullLetterList_arr;\n")
 file.write("}\n")

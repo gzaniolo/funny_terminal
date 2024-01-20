@@ -4,9 +4,7 @@
 
 #include <stdint.h>
 
-uint8_t *fullXList;
-uint8_t *fullYList;
-uint8_t *fullPenUpList;
+uint8_t *fullLetterList;
 
 void letters_gen_init();
 

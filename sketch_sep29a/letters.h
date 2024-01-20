@@ -8,13 +8,7 @@
 
 #include <stdint.h>
 
-typedef struct letter_s {
-  uint8_t *xList;
-  uint8_t *yList;
-  uint8_t *penUpList;
-} letter_t;
-
-letter_t letters[128];
+uint8_t *letters[128];
 
 void letters_init();
 

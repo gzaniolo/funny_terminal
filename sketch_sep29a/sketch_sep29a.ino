@@ -44,13 +44,17 @@ void write_pen(uint32_t status) {
 
 
 // TODO future have a letter parameter
-void write_letter(uint32_t row, uint32_t col) {
+void write_letter(char letter, uint32_t row, uint32_t col) {
   // TODO maybe wait a little bit after setting the voltage to actually draw the
   //  letter
   uint32_t row_offset = VOLTAGE_LVLS_TOTAL - (row * VOLTAGE_LVLS_CHAR) - 1;
   uint32_t col_offset = col * VOLTAGE_LVLS_CHAR; 
-  for(int i = 0; i < period; i++) {
-    write_pos(row_offset - levelYList[i], col_offset + levelXList[i]);
+
+  for(int i = 0; letters[letter][i] != -1; i++) {
+    int x_pos = letters[letter][i] & 0x3;
+    int y_pos = letters[letter][i] >> 2;
+    write_pos(row_offset - y_pos, col_offset + x_pos);
+    // TODO adjust timing or remove
 //    delayMicroseconds(50);
     delayMicroseconds(40);
     write_pen(penUpList[i]);
