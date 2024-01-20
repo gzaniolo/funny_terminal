@@ -14,11 +14,4 @@ void letters_init() {
     curr_idx++;
   }
 
-//  for(int i = 0; i < 128; i++) {
-//    Serial.println("For %c:\n",i);
-//    for(int j = 0; letters[i].xList[j] != -1; j++) {
-//      Serial.print("%d,",letters[i].xList[j]);
-//    }
-//    Serial.println("\n");
-//  }
 }

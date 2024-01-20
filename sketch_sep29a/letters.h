@@ -6,6 +6,7 @@
  extern "C" {
 #endif
 
+#include <stdint.h>
 
 typedef struct letter_s {
   uint8_t *xList;
