@@ -58,7 +58,7 @@ void write_letter(char letter, uint32_t row, uint32_t col) {
 //    delayMicroseconds(50);
     delayMicroseconds(40);
     write_pen(penUpList[i]);
-    delayMicroseconds(10);
+    delayMicroseconds(40);
   }
 }
 
@@ -69,12 +69,13 @@ void setup() {
 
   letters_init();
 
+//TODO remove
   // Verify letters
   for(int i = 0; i < 128; i++) {
     Serial.print("For");
     Serial.println(char(i));
-    for(int j = 0; letters[i].xList[j] != -1; j++) {
-      Serial.print(letters[i].xList[j]);
+    for(int j = 0; letters[i][j] != -1; j++) {
+      Serial.print(letters[i][j]);
       Serial.print(",");
     }
     Serial.println("\n");
@@ -96,13 +97,24 @@ void setup() {
   write_pos(0,0);
 }
 
+
+//TODO temporary
+char to_print[] = "william is the goat of reading bad handwriting";
+
+
 void loop() {
 
 for(int i = 0; i < CHARS_PER_ROW; i++) {
   for(int j = 0; j < CHARS_PER_ROW; j++) {
-    write_letter(i,j);
+    int pos_to_print = i * CHARS_PER_ROW + j;
+    if(pos_to_print < 46) {
+      write_letter(to_print[pos_to_print],i,j);
+    } else {
+      write_letter(' ',i,j);
+    }
   }
 }
+
 
 
 // TODO tests to see if the circuit works

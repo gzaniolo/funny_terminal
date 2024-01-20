@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-uint8_t *letters[128];
+int8_t *letters[128];
 
 void letters_init();
 
