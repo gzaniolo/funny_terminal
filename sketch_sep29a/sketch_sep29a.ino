@@ -7,15 +7,11 @@
 //  letters
 
 
+// NOTE: something is getting corrupted on the arduino end :(
+
+
 #include "letters.h"
 
-// TODO this protocol appears to have its last move end at the bottom left
-//  corner of the letter. See if this is good...
-int levelXList[] = {0,2,1,2,0,0};
-int levelYList[] = {2,2,1,0,0,2};
-int penUpList[] =   {0,0,0,0,0,1};
-// TODO not permanent by any means
-int period = 6;
 
 #define LOW_PIN_OFFSET 2
 // TODO may eventually have to diverge into x and y pin counts
@@ -26,9 +22,39 @@ int period = 6;
 // TODO may change, also if change bits per row/col
 #define CHARS_PER_ROW (VOLTAGE_LVLS_TOTAL / VOLTAGE_LVLS_CHAR)
 
+#define CHAR_COUNT (CHARS_PER_ROW * CHARS_PER_ROW)
+
 
 uint32_t curr_row = 0;
 uint32_t curr_col = 0;
+
+uint32_t curr_char_idx = 0;
+
+char char_buf[CHAR_COUNT + 3];
+
+char last_three_char[3];
+
+void check_and_recieve_char() {
+  if(Serial.available() > 0) {
+    last_three_char[0] = last_three_char[1];
+    last_three_char[1] = last_three_char[2];
+    last_three_char[2] = Serial.read();
+    //Serial.print(last_three_char[2]);
+    //Serial.print((uint8_t)last_three_char[2]);
+
+    if((uint8_t)last_three_char[0] == 4 && (uint8_t)last_three_char[1] == 5 &&
+        (uint8_t)last_three_char[2] == 6) {
+      curr_char_idx = 0;
+      //Serial.println();
+    } else {
+      char_buf[curr_char_idx] = last_three_char[2];
+      if(curr_char_idx < CHAR_COUNT + 3) {
+        curr_char_idx++;
+      }
+    }
+  }
+}
+
 
 void write_pos(uint32_t row, uint32_t col) {
 // These values are too tightly coupled to arduino pins to generalize. Just use
@@ -43,7 +69,6 @@ void write_pen(uint32_t status) {
 }
 
 
-// TODO future have a letter parameter
 void write_letter(char letter, uint32_t row, uint32_t col) {
   // TODO maybe wait a little bit after setting the voltage to actually draw the
   //  letter
@@ -52,12 +77,13 @@ void write_letter(char letter, uint32_t row, uint32_t col) {
 
   for(int i = 0; letters[letter][i] != -1; i++) {
     int x_pos = letters[letter][i] & 0x3;
-    int y_pos = letters[letter][i] >> 2;
+    int y_pos = (letters[letter][i] >> 2) & 0x3;
+    int pen_up = (letters[letter][i] >> 4) & 0x3;
     write_pos(row_offset - y_pos, col_offset + x_pos);
     // TODO adjust timing or remove
-//    delayMicroseconds(50);
+    //  delayMicroseconds(50);
     delayMicroseconds(40);
-    write_pen(penUpList[i]);
+    write_pen(pen_up);
     delayMicroseconds(40);
   }
 }
@@ -69,17 +95,13 @@ void setup() {
 
   letters_init();
 
-//TODO remove
-  // Verify letters
-  for(int i = 0; i < 128; i++) {
-    Serial.print("For");
-    Serial.println(char(i));
-    for(int j = 0; letters[i][j] != -1; j++) {
-      Serial.print(letters[i][j]);
-      Serial.print(",");
-    }
-    Serial.println("\n");
+  for(int i = 0; i < CHAR_COUNT; i++) {
+    char_buf[i] = ' ';
   }
+
+  last_three_char[0] = -1;
+  last_three_char[1] = -1;
+  last_three_char[2] = -1;
 
   // We initialize all pins lol. Review if it turns out we need more pins
   for(int i = 2; i < 14; i++) {
@@ -98,8 +120,6 @@ void setup() {
 }
 
 
-//TODO temporary
-char to_print[] = "I think I may pay a visit to the tastily wonderful hunan express";
 
 
 void loop() {
@@ -108,19 +128,21 @@ for(int i = 0; i < CHARS_PER_ROW; i++) {
   for(int j = 0; j < CHARS_PER_ROW; j++) {
     int pos_to_print = i * CHARS_PER_ROW + j;
 
-    if(pos_to_print < 128) {
-      write_letter((char)pos_to_print,i,j);
-    } else {
-      write_letter(' ',i,j);
-    }
-
-    // if(pos_to_print < 100) {
-    //   write_letter(to_print[pos_to_print],i,j);
+    // Prints all ascii chars for debugging
+    // if(pos_to_print < 128) {
+    //   write_letter((char)pos_to_print,i,j);
     // } else {
     //   write_letter(' ',i,j);
     // }
+
+    //Serial.print(char_buf[pos_to_print]);
+    write_letter(char_buf[pos_to_print],i,j);
+    check_and_recieve_char();
   }
+  //Serial.println();
 }
+//Serial.println("\n");
+
 
 
 

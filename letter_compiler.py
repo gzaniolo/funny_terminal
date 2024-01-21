@@ -52,7 +52,8 @@ file.write("int8_t fullLetterList[] = {")
 for i in range(128):
   if i in char_dict:
     for j in range(len(char_dict[i].x_points)):
-      elem = char_dict[i].x_points[j] + (char_dict[i].y_points[j] << 2)
+      elem = char_dict[i].x_points[j] + (char_dict[i].y_points[j] << 2) \
+        + (char_dict[i].pen_points[j] << 4)
       file.write(f"{elem},")
   file.write("-1,")
 file.write("-1};\n\n")
