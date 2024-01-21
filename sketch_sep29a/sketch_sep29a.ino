@@ -28,30 +28,28 @@
 uint32_t curr_row = 0;
 uint32_t curr_col = 0;
 
-uint32_t curr_char_idx = 0;
+char char_buf[CHAR_COUNT];
 
-char char_buf[CHAR_COUNT + 3];
 
-char last_three_char[3];
-
-void check_and_recieve_char() {
+void refresh_buf() {
   if(Serial.available() > 0) {
-    last_three_char[0] = last_three_char[1];
-    last_three_char[1] = last_three_char[2];
-    last_three_char[2] = Serial.read();
-    //Serial.print(last_three_char[2]);
-    //Serial.print((uint8_t)last_three_char[2]);
 
-    if((uint8_t)last_three_char[0] == 4 && (uint8_t)last_three_char[1] == 5 &&
-        (uint8_t)last_three_char[2] == 6) {
-      curr_char_idx = 0;
-      //Serial.println();
-    } else {
-      char_buf[curr_char_idx] = last_three_char[2];
-      if(curr_char_idx < CHAR_COUNT + 3) {
-        curr_char_idx++;
+    //Serial.println("chars available");
+    int idx = 0;
+    char byte = 0;
+    while(byte != '\n') {
+      if(Serial.available() > 0) {
+        byte = Serial.read();
+        char_buf[idx] = byte;
+        //Serial.print(byte);
+        idx++;
       }
     }
+    while(idx < CHAR_COUNT) {
+      char_buf[idx] = ' ';
+      idx++;
+    }
+    //Serial.println("done printing");
   }
 }
 
@@ -99,10 +97,6 @@ void setup() {
     char_buf[i] = ' ';
   }
 
-  last_three_char[0] = -1;
-  last_three_char[1] = -1;
-  last_three_char[2] = -1;
-
   // We initialize all pins lol. Review if it turns out we need more pins
   for(int i = 2; i < 14; i++) {
     pinMode(i,OUTPUT);
@@ -124,24 +118,22 @@ void setup() {
 
 void loop() {
 
-for(int i = 0; i < CHARS_PER_ROW; i++) {
-  for(int j = 0; j < CHARS_PER_ROW; j++) {
-    int pos_to_print = i * CHARS_PER_ROW + j;
-
-    // Prints all ascii chars for debugging
-    // if(pos_to_print < 128) {
-    //   write_letter((char)pos_to_print,i,j);
-    // } else {
-    //   write_letter(' ',i,j);
-    // }
-
-    //Serial.print(char_buf[pos_to_print]);
-    write_letter(char_buf[pos_to_print],i,j);
-    check_and_recieve_char();
+  for(int i = 0; i < CHARS_PER_ROW; i++) {
+    for(int j = 0; j < CHARS_PER_ROW; j++) {
+      int pos_to_print = i * CHARS_PER_ROW + j;
+  
+      // // Prints all ascii chars for debugging
+      // if(pos_to_print < 128) {
+      //   write_letter((char)pos_to_print,i,j);
+      // } else {
+      //   write_letter(' ',i,j);
+      // }
+  
+      write_letter(char_buf[pos_to_print],i,j);
+    }
+  
   }
-  //Serial.println();
-}
-//Serial.println("\n");
+  refresh_buf();
 
 
 

@@ -29,7 +29,6 @@ newl = chr(27) + "[?2004h"
 newl2 = chr(27) + "[?2004l\n"
 bel = chr(7)
 bs = chr(8) + chr(27) + "[K"
-init_seq = chr(4) + chr(5) + chr(6)
 
 
 
@@ -86,7 +85,7 @@ while(True):
     dummy_print_term(acc_send)
     prev_acc = acc_send
     
-    acc_send = init_seq + acc_send
+    acc_send = acc_send + "\n"
     arduino_file.write(acc_send)
     arduino_file.flush()
     # TODO remove

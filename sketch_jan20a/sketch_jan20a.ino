@@ -21,14 +21,16 @@ void loop() {
   //  we can have a cpp program
 
 
-  int byte;
+  char byte = 0;
   if(Serial.available() > 0) {
-    byte = Serial.read();
-    Serial.print(char(byte));
-    if(iter == 0) {
-      Serial.println();
+    while(byte != '\n') {
+      if(Serial.available() > 0) {
+        byte = Serial.read();
+        Serial.print(byte);
+      }
     }
-    iter = (iter + 1) % 256;
+    byte = 0;
+    Serial.println("done printing");
   }
 }
 
