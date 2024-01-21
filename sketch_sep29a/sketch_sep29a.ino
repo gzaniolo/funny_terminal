@@ -32,25 +32,22 @@ char char_buf[CHAR_COUNT];
 
 
 void refresh_buf() {
-  if(Serial.available() > 0) {
-
-    //Serial.println("chars available");
-    int idx = 0;
-    char byte = 0;
-    while(byte != '\n') {
-      if(Serial.available() > 0) {
-        byte = Serial.read();
-        char_buf[idx] = byte;
-        //Serial.print(byte);
-        idx++;
-      }
-    }
-    while(idx < CHAR_COUNT) {
-      char_buf[idx] = ' ';
+  Serial.println("chars available");
+  int idx = 0;
+  char byte = 0;
+  while(byte != '\n') {
+    if(Serial.available() > 0) {
+      byte = Serial.read();
+      char_buf[idx] = byte;
+      //Serial.print(byte);
       idx++;
     }
-    //Serial.println("done printing");
   }
+  while(idx < CHAR_COUNT) {
+    char_buf[idx] = ' ';
+    idx++;
+  }
+  //Serial.println("done printing");
 }
 
 
@@ -104,11 +101,12 @@ void setup() {
   // Do these individually instead of with the ddrc=0x2
   // I don't know what the default is but we should probably keep it that way
   pinMode(A0, OUTPUT);
-//  pinMode(A1, OUTPUT);
 
-// Website with the arduino stuff
-// https://forum.arduino.cc/t/using-port-c-as-digital-output/15981/2
-// ctrl+f for: Port C includes the RESET pin on PC6 and an undefined pin on PC7. PC0 thru PC5 map to Arduino A0 (14) thru to A5 (19). 
+  attachInterrupt(A2,refresh_buf,RISING); 
+
+  // Website with the arduino stuff
+  // https://forum.arduino.cc/t/using-port-c-as-digital-output/15981/2
+  // ctrl+f for: Port C includes the RESET pin on PC6 and an undefined pin on PC7. PC0 thru PC5 map to Arduino A0 (14) thru to A5 (19). 
 
   write_pos(0,0);
 }

@@ -90,7 +90,6 @@ while(True):
     arduino_file.flush()
     # TODO remove
     test_file.write(acc_send)
-    test_file.write("\n")
     test_file.flush()
 
   acc_term = acc_term[-256*4:]
