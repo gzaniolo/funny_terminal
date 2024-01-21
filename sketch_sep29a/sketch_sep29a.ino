@@ -99,7 +99,7 @@ void setup() {
 
 
 //TODO temporary
-char to_print[] = "william is the goat of reading bad handwriting";
+char to_print[] = "I think I may pay a visit to the tastily wonderful hunan express";
 
 
 void loop() {
@@ -107,11 +107,18 @@ void loop() {
 for(int i = 0; i < CHARS_PER_ROW; i++) {
   for(int j = 0; j < CHARS_PER_ROW; j++) {
     int pos_to_print = i * CHARS_PER_ROW + j;
-    if(pos_to_print < 46) {
-      write_letter(to_print[pos_to_print],i,j);
+
+    if(pos_to_print < 128) {
+      write_letter((char)pos_to_print,i,j);
     } else {
       write_letter(' ',i,j);
     }
+
+    // if(pos_to_print < 100) {
+    //   write_letter(to_print[pos_to_print],i,j);
+    // } else {
+    //   write_letter(' ',i,j);
+    // }
   }
 }
 

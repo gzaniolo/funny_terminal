@@ -39,11 +39,15 @@ for line in removed_comments:
 # print(char_dict[ord('a')].y_points)
 # print(char_dict[ord('a')].pen_points)
   
-file = open("./sketch_sep29a/letters_gen.c","w")
+file = open("./sketch_sep29a/letters_gen.h","w")
 
-file.write("#include \"letters_gen.h\"\n\n")
+file.write("\n")
+file.write("#ifndef _LETTERS_GEN_H_\n")
+file.write("#define _LETTERS_GEN_H_\n\n")
 
-file.write("uint8_t fullLetterList_arr[] = {")
+file.write("#include <stdint.h>\n\n")
+
+file.write("int8_t fullLetterList[] = {")
 # write big x array
 for i in range(128):
   if i in char_dict:
@@ -53,7 +57,4 @@ for i in range(128):
   file.write("-1,")
 file.write("-1};\n\n")
 
-
-file.write("void letters_gen_init() {\n")
-file.write("  fullLetterList = fullLetterList_arr;\n")
-file.write("}\n")
+file.write("#endif\n")
