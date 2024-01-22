@@ -1,0 +1,27 @@
+Instructions:
+
+Hardware:
+- probe gets put on middle pin of the mosfets
+- 10v gets put from one end of the nearly 10k resistors
+- refer to phone pictures for main pinouts (in general, 2-13 are used, white in
+ high, farthest white gets 13)
+- A0 gets pen pin
+- ground using arduino
+
+On start:
+* sketch_sep29a gets loaded onto the arduino
+ * make sure serial out is closed
+* cd to laptop_code
+* $ bash tmux_commands.sh
+* in separate terminal, python3 term_state.py
+
+On end:
+* $ bash tmux_restore.sh
+ * returns .bashrc to its original state
+
+
+
+Potential improvements:
+* increased letter size
+* recieving new letter times out
+* sending data happens periodically instead of only on update

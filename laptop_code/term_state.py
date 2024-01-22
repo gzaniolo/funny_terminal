@@ -36,7 +36,7 @@ term_file_path = "./curr_term.log"
 
 term_file = open(term_file_path,"r")
 
-arduino_file = open("/dev/ttyACM0","w")
+arduino_file = open("/dev/ttyACM1","w")
 
 # TODO delete
 test_file = open("./test.log","w")

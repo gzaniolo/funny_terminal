@@ -123,13 +123,13 @@ void loop() {
       int pos_to_print = i * CHARS_PER_ROW + j;
   
       // Prints all ascii chars for debugging
-      if(pos_to_print < 128) {
-        write_letter((char)pos_to_print,i,j);
-      } else {
-        write_letter(' ',i,j);
-      }
+      // if(pos_to_print < 128) {
+      //   write_letter((char)pos_to_print,i,j);
+      // } else {
+      //   write_letter(' ',i,j);
+      // }
   
-      // write_letter(char_buf[pos_to_print],i,j);
+      write_letter(char_buf[pos_to_print],i,j);
     }
   
   }
