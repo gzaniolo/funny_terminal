@@ -24,7 +24,10 @@
 
 #define CHAR_COUNT (CHARS_PER_ROW * CHARS_PER_ROW)
 
-#define NUM_REFRESH_ITERS 1000
+
+// If this is too fast, the arduino will not have enough time to read all bytes
+// If this is too slow, the arduino seems to clog up if you send bytes too fast
+#define NUM_REFRESH_ITERS 2000
 
 
 uint32_t curr_row = 0;

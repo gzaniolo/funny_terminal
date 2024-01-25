@@ -1,12 +1,15 @@
 import os
 import time
+import serial
 
 CHARS_PER_ROW = 8
-ITERS_FOR_REFRESH = 5
+# This is a very long time but it gets flickery if you refresh it too often
+ITERS_FOR_REFRESH = 20
 
 term_file_path = "./curr_term.log"
 arduino_file_path = "/dev/ttyACM0"
 
+arduino_ser = serial.Serial(arduino_file_path, 115200)
 
 def dummy_print_term(buf: str):
   print("---------------------------\n\n")
@@ -37,8 +40,6 @@ bs = chr(8) + chr(27) + "[K"
 
 
 term_file = open(term_file_path,"r")
-
-arduino_file = open(arduino_file_path,"w")
 
 # TODO delete
 test_file = open("./test.log","w")
@@ -91,8 +92,9 @@ while(True):
     prev_acc = acc_send
     
     acc_send = acc_send + "\n"
-    arduino_file.write(acc_send)
-    arduino_file.flush()
+    acc_send_ascii = acc_send.encode("ascii","ignore")
+    arduino_ser.write(acc_send_ascii)
+    arduino_ser.flush()
     # TODO remove
     test_file.write(acc_send)
     test_file.write("\n")
@@ -101,7 +103,6 @@ while(True):
   acc_term = acc_term[-256*4:]
 
   iters += 1
-  print(iters)
   time.sleep(.1)
 
 

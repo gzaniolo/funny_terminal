@@ -30,3 +30,18 @@ Potential improvements:
  acknowledgements?
 * Refresh buffer periodically instead of only on update to write over misread
 recieves
+
+venv:
+To create a new virtual environment in a directory named env, run:
+  python3 -m venv env
+
+To activate this virtual environment (which modifies the PATH environment variable), run this:
+  source env/bin/activate
+
+Now you can install a library like requests in this virtual environment:
+  pip install requests
+
+The files will get installed under the env/ directory.
+
+If you want to leave the virtual environment, you can run:
+  deactivate
