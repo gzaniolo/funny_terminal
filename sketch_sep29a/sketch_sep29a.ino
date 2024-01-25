@@ -20,9 +20,11 @@
 // TODO may change once we actually write all the chars
 #define VOLTAGE_LVLS_CHAR 4
 // TODO may change, also if change bits per row/col
-#define CHARS_PER_ROW (VOLTAGE_LVLS_TOTAL / VOLTAGE_LVLS_CHAR)
+#define CHARS_PER_ROW ((VOLTAGE_LVLS_TOTAL / VOLTAGE_LVLS_CHAR) / 2)
 
 #define CHAR_COUNT (CHARS_PER_ROW * CHARS_PER_ROW)
+
+#define NUM_REFRESH_ITERS 1000
 
 
 uint32_t curr_row = 0;
@@ -33,17 +35,18 @@ char char_buf[CHAR_COUNT];
 
 void refresh_buf() {
   if(Serial.available() > 0) {
-
+    int iters = 0;
     //Serial.println("chars available");
     int idx = 0;
     char byte = 0;
-    while(byte != '\n') {
+    while(byte != '\n' && iters < NUM_REFRESH_ITERS) {
       if(Serial.available() > 0) {
         byte = Serial.read();
         char_buf[idx] = byte;
         Serial.print(byte);
         idx++;
       }
+      iters++;
     }
     while(idx < CHAR_COUNT) {
       char_buf[idx] = ' ';

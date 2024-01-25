@@ -1,6 +1,12 @@
 import os
 import time
 
+CHARS_PER_ROW = 8
+ITERS_FOR_REFRESH = 5
+
+term_file_path = "./curr_term.log"
+arduino_file_path = "/dev/ttyACM0"
+
 
 def dummy_print_term(buf: str):
   print("---------------------------\n\n")
@@ -10,19 +16,18 @@ def dummy_print_term(buf: str):
       print(' ',end='')
     else:
       print(c,end='')
-    if i % 16 == 15:
+    if i % CHARS_PER_ROW == (CHARS_PER_ROW - 1):
       print("")
     i += 1
   print("\n---------------------------\n\n")
   i=0
   for c in buf:
     print(ord(c),end=' ')
-    if i % 16 == 15:
+    if i % CHARS_PER_ROW == (CHARS_PER_ROW - 1):
       print("")
     i += 1
   print("\n\n")
 
-# dummy_print_term("somebody once told me the world was gonna roll me, I ain't the sharpest tool in the shed")
 
 # sequences
 newl = chr(27) + "[?2004h"
@@ -31,12 +36,9 @@ bel = chr(7)
 bs = chr(8) + chr(27) + "[K"
 
 
-
-term_file_path = "./curr_term.log"
-
 term_file = open(term_file_path,"r")
 
-arduino_file = open("/dev/ttyACM1","w")
+arduino_file = open(arduino_file_path,"w")
 
 # TODO delete
 test_file = open("./test.log","w")
@@ -47,6 +49,8 @@ term_file.seek(0,os.SEEK_END)
 
 acc_term = ""
 prev_acc = ""
+
+iters = 0
 
 while(True):
   new_bytes = term_file.read()
@@ -67,20 +71,21 @@ while(True):
   acc_send = ""
   for c in acc_term:
     if c == "\n":
-      bytes_add = (16 - (i % 16))
+      bytes_add = (CHARS_PER_ROW - (i % CHARS_PER_ROW))
       acc_send += " " * bytes_add
       i += bytes_add
     else:
       acc_send += c
       i += 1
   # top off last row 
-  acc_send += " " * (16 - (i % 16))
+  acc_send += " " * (CHARS_PER_ROW - (i % CHARS_PER_ROW))
   # Remove any extra prior stuff
-  acc_send = acc_send[-256:]
+  acc_send = acc_send[-(CHARS_PER_ROW*CHARS_PER_ROW):]
 
 
   # Send terminal bytes
-  if acc_send != prev_acc:
+  if acc_send != prev_acc or iters == ITERS_FOR_REFRESH:
+    iters = 0
     # TODO remove
     dummy_print_term(acc_send)
     prev_acc = acc_send
@@ -94,6 +99,9 @@ while(True):
     test_file.flush()
 
   acc_term = acc_term[-256*4:]
+
+  iters += 1
+  print(iters)
   time.sleep(.1)
 
 

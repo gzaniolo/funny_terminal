@@ -20,8 +20,13 @@ On end:
  * returns .bashrc to its original state
 
 
+Completed improvements:
+* Fully paramaterized number of chars per row
 
 Potential improvements:
-* increased letter size
-* recieving new letter times out
-* sending data happens periodically instead of only on update
+* Better communication:
+ * Buffer appears to be 64 bytes. Less data sent may just solve the issue
+ * If a way is found to send more data, do it in chunks of 64 with 
+ acknowledgements?
+* Refresh buffer periodically instead of only on update to write over misread
+recieves
