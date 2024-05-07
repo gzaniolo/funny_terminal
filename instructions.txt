@@ -32,6 +32,7 @@ Potential improvements:
 recieves
 
 venv:
+NOTE: ours is currently in .venv
 To create a new virtual environment in a directory named env, run:
   python3 -m venv env
 

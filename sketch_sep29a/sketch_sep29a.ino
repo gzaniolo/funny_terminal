@@ -128,9 +128,12 @@ void loop() {
     for(int j = 0; j < CHARS_PER_ROW; j++) {
       int pos_to_print = i * CHARS_PER_ROW + j;
   
-      // Prints all ascii chars for debugging
+      // Prints just the letter 'B' for debugging
+      // write_letter('B',i,j);
+
+      // // Prints all ascii chars for debugging
       // if(pos_to_print < 128) {
-      //   write_letter((char)pos_to_print,i,j);
+      //   write_letter((char)(pos_to_print) + ' ',i,j);
       // } else {
       //   write_letter(' ',i,j);
       // }
